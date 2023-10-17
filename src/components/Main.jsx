@@ -6,6 +6,7 @@ export default function () {
     const [ageFilText, setAgeFilText] = useState("")
     const [filData, setFilData] = useState(sampleData)
     const [cityVal,setCityVal] = useState("All")
+    const [occVal,setOccVal] = useState("All")
     const [flag, setFlag] = useState(true)
 
 
@@ -13,41 +14,65 @@ export default function () {
         sample.city
     ))
     cities.unshift("All")
+
+    let occupations =  sampleData.map((sample) =>(
+        sample.occupation
+    ))
+    occupations.unshift("All")
+
+
+
     useEffect(()=>{
         setFilData(sampleData)
     },[flag])
 
+
+
+
     const handleSearch = () => {
         let filterBySearch = []
-        if (nameFilText === "" && ageFilText === "") {  return; } 
+        if (nameFilText === "" && ageFilText === "" && cityVal==="All" && occVal==="All") {  return; } 
 
-        else if (nameFilText !== "" && ageFilText === ""){
+        else if (nameFilText !== "" && ageFilText === "" && cityVal==="All" && occVal==="All"){
         filterBySearch = filData.filter((item) => { 
             if (item.name.toLowerCase() 
                 .includes(nameFilText.toLowerCase())) { return item; } })
             setFilData(filterBySearch)
         
     }
-    else if (nameFilText === "" && ageFilText !== ""){
+    else if (nameFilText === "" && ageFilText !== "" && cityVal==="All" && occVal==="All"){
         filterBySearch = filData.filter((item) => { 
             if (item.age == ageFilText) { return item; } })
             setFilData(filterBySearch)
         
     }
-    else if (nameFilText !== "" && ageFilText !== ""){
+    else if (nameFilText !== "" && ageFilText !== "" && cityVal==="All" && occVal==="All"){
         filterBySearch = filData.filter((item) => { 
             if (item.name.toLowerCase() 
             .includes(nameFilText.toLowerCase()) && item.age == ageFilText) { return item; } })
             setFilData(filterBySearch)
         
     }
+    else if (nameFilText !== "" && ageFilText !== "" && cityVal!=="All" && occVal!=="All"){
+        filterBySearch = filData.filter((item) => { 
+            if (item.name.toLowerCase() 
+            .includes(nameFilText.toLowerCase()) && item.age == ageFilText && cityVal.toLowerCase() === item.city && occVal.toLowerCase() === item.occupation) { return item; } })
+            setFilData(filterBySearch)
+    }
     
     
     }
 
-    const handleChange = (e) => {
-        const [value] = e.target
-        setCityVal(value)
+    const handleSelect = (e) => {
+        const [id,value] = e.target.value
+
+        if(id==="1"){
+            setCityVal(value)
+
+        }
+        else if (id==="2"){
+            setOccVal(value)
+        }
     }
 
     const handleReset = (e) => {
@@ -69,6 +94,9 @@ export default function () {
             onChange={(e) => setNameFilText(e.target.value)} /> 
 
         </div>
+
+
+
         <div>
             <label >Filter by Age </label>
             <input 
@@ -77,15 +105,34 @@ export default function () {
             value={ageFilText}
             onChange={(e) => setAgeFilText(e.target.value)} /> 
         </div>
+
+
         <label > Cities </label>
-        <select name="Hello" onChange={handleChange} id="1">
+        <select onChange={handleSelect} name="Cities"  id="1">
         {cities.map((city) =>(
-        <option value={city}>{city}</option>
+        <option onChange={handleSelect} value={city}>{city}</option>
         )
         )
         }
         </select>
+
         <br/>
+
+        <label > Occupations </label>
+        <select onChange={handleSelect} name="occupations"  id="2">
+        {occupations.map((city) =>(
+        <option value={city}>{city}</option>
+
+        )
+        )
+        }
+        </select>
+
+        <br/>
+
+
+
+
         <button onClick={handleSearch}>Search</button>
         <br/>
         <button onClick={handleReset}>Reset</button>
