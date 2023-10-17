@@ -5,9 +5,17 @@ export default function () {
     const [nameFilText, setNameFilText] = useState("")
     const [ageFilText, setAgeFilText] = useState("")
     const [filData, setFilData] = useState(sampleData)
+    const [cityVal,setCityVal] = useState("All")
+    const [flag, setFlag] = useState(true)
 
 
-
+    let cities =  sampleData.map((sample) =>(
+        sample.city
+    ))
+    cities.unshift("All")
+    useEffect(()=>{
+        setFilData(sampleData)
+    },[flag])
 
     const handleSearch = () => {
         let filterBySearch = []
@@ -35,8 +43,17 @@ export default function () {
     }
     
     
-}
+    }
 
+    const handleChange = (e) => {
+        const [value] = e.target
+        setCityVal(value)
+    }
+
+    const handleReset = (e) => {
+        setFlag(!flag)
+
+    }
     
 
 
@@ -60,13 +77,26 @@ export default function () {
             value={ageFilText}
             onChange={(e) => setAgeFilText(e.target.value)} /> 
         </div>
-        <button onClick={handleSearch}>Search</button>  
+        <label > Cities </label>
+        <select name="Hello" onChange={handleChange} id="1">
+        {cities.map((city) =>(
+        <option value={city}>{city}</option>
+        )
+        )
+        }
+        </select>
+        <br/>
+        <button onClick={handleSearch}>Search</button>
+        <br/>
+        <button onClick={handleReset}>Reset</button>
+          
 
         {filData.map((sample)=>(
             <>
             <h3> Id : {sample.id}, Name: {sample.name}, Age: {sample.age}, city: {sample.city}, Occupation: {sample.occupation} <br/> <br/> </h3>
             </>
         ))}
+        
     </div>
   )
 }
